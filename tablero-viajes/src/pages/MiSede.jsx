@@ -161,11 +161,24 @@ export default function MiSede({ perfil }) {
                     <td style={{ color: '#64748b', fontSize: '12px', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.observacion || '—'}</td>
                     <td>
                       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                        {v.estado === 'Programado' && (
-                          <button className="btn btn-sm" style={{ background: '#d1e7dd', color: '#0a3622', border: 'none' }}
-                            onClick={() => cambiarEstado(v, 'Salió')}>
-                            ✓ Salió
-                          </button>
+                       {v.estado === 'Programado' && (
+  <button className="btn btn-sm" style={{ background: '#d1e7dd', color: '#0a3622', border: 'none' }}
+    onClick={() => cambiarEstado(v, 'Salió')}>
+    ✓ Salió
+  </button>
+)}
+{(v.estado === 'Programado' || v.estado === 'Salió') && (
+  <button className="btn btn-sm" style={{ background: '#fff3cd', color: '#856404', border: 'none' }}
+    onClick={() => cambiarEstado(v, 'Reprogramado')}>
+    ↺ Reprogramar
+  </button>
+)}
+{v.estado !== 'Llegó' && v.estado !== 'Cancelado' && (
+  <button className="btn btn-sm" style={{ background: '#f8d7da', color: '#842029', border: 'none' }}
+    onClick={() => cambiarEstado(v, 'Cancelado')}>
+    ✕ Cancelar
+  </button>
+)}
                         )}
                         {v.estado !== 'Llegó' && (
                           <button className="btn btn-ghost btn-sm" onClick={() => abrirEdicion(v)}>Editar</button>
