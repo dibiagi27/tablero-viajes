@@ -132,7 +132,7 @@ export default function ViajeModal({ perfil, viaje, onClose, onSave, isAdmin }) 
             </div>
             <div className="form-group">
               <label>Fecha Salida Programada</label>
-              <input type="date" value={form.fecha_salida} onChange={e => set('fecha_salida', e.target.value)} />
+              <input type="date" value={form.fecha_salida} min={new Date().toISOString().split('T')[0]} onChange={e => set('fecha_salida', e.target.value)} />
             </div>
           </div>
 
