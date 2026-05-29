@@ -10,9 +10,6 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [editando, setEditando] = useState(null)
   const [modalViaje, setModalViaje] = useState(false)
-  const [modalUsuario, setModalUsuario] = useState(false)
-  const [nuevoUsuario, setNuevoUsuario] = useState({ email: '', password: '', nombre: '', sede: 'Chile' })
-  const [msgUsuario, setMsgUsuario] = useState('')
   const [filtroSede, setFiltroSede] = useState('')
   const [filtroEstado, setFiltroEstado] = useState('')
 
@@ -48,32 +45,6 @@ export default function Admin() {
     if (!confirm('¿Eliminar este viaje?')) return
     await supabase.from('viajes').delete().eq('id', id)
     fetchViajes()
-  }
-
-  async function crearUsuario(e) {
-    e.preventDefault()
-    setMsgUsuario('')
-    const { data, error } = await supabase.auth.admin?.createUser({
-      email: nuevoUsuario.email,
-      password: nuevoUsuario.password,
-      email_confirm: true,
-    })
-
-    if (error) {
-      setMsgUsuario('Error: ' + error.message)
-      return
-    }
-
-    if (data?.user) {
-      await supabase.from('perfiles').insert({
-        id: data.user.id,
-        sede: nuevoUsuario.sede,
-        nombre: nuevoUsuario.nombre,
-      })
-      setMsgUsuario('✅ Usuario creado correctamente')
-      setNuevoUsuario({ email: '', password: '', nombre: '', sede: 'Chile' })
-      fetchUsuarios()
-    }
   }
 
   const filtrados = viajes.filter(v => {
@@ -178,45 +149,29 @@ export default function Admin() {
       )}
 
       {tab === 'usuarios' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', alignItems: 'start' }}>
-          {/* Lista de usuarios */}
+        <div style={{ maxWidth: '500px' }}>
           <div className="card" style={{ padding: '20px' }}>
-            <h3 style={{ marginBottom: '16px', fontSize: '15px' }}>Usuarios activos</h3>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <h3 style={{ fontSize: '15px' }}>Usuarios activos</h3>
+              
+                href="https://supabase.com/dashboard/project/jqxwovzumylkykoocakw/auth/users"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary btn-sm"
+              >
+                + Crear usuario
+              </a>
+            </div>
             {usuarios.map(u => (
               <div key={u.id} style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 padding: '10px 0', borderBottom: '1px solid #f1f5f9'
               }}>
-                <div>
-                  <div style={{ fontWeight: '600', fontSize: '13px' }}>{u.nombre}</div>
-                </div>
+                <div style={{ fontWeight: '600', fontSize: '13px' }}>{u.nombre}</div>
                 <span className={`sede-badge sede-${u.sede}`}>{u.sede}</span>
               </div>
             ))}
             {usuarios.length === 0 && <p style={{ color: '#64748b', fontSize: '13px' }}>No hay usuarios</p>}
-          </div>
-
-          {/* Crear usuario */}
-          <div className="card" style={{ padding: '20px' }}>
-            <h3 style={{ marginBottom: '16px', fontSize: '15px' }}>Crear nuevo usuario</h3>
-            <p style={{ color: '#64748b', fontSize: '12px', marginBottom: '16px', background: '#f8fafc', padding: '10px', borderRadius: '8px' }}>
-              ⚠️ Para crear usuarios necesitás hacerlo desde el panel de Supabase → Authentication → Users → Invite user, y luego asignar la sede en la tabla "perfiles".
-            </p>
-            <div className="form-group">
-              <label>Nombre del operador</label>
-              <input value={nuevoUsuario.nombre} onChange={e => setNuevoUsuario({...nuevoUsuario, nombre: e.target.value})} placeholder="Ej: Juan Pérez" />
-            </div>
-            <div className="form-group">
-              <label>Sede</label>
-              <select value={nuevoUsuario.sede} onChange={e => setNuevoUsuario({...nuevoUsuario, sede: e.target.value})}>
-                {['Chile','Mendoza','Buenos Aires','Uruguay','admin'].map(s => <option key={s}>{s}</option>)}
-              </select>
-            </div>
-            {msgUsuario && (
-              <div style={{ background: '#d1e7dd', color: '#0a3622', padding: '10px', borderRadius: '8px', fontSize: '13px', marginBottom: '12px' }}>
-                {msgUsuario}
-              </div>
-            )}
           </div>
         </div>
       )}
