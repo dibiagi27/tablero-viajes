@@ -37,7 +37,6 @@ export default function Login() {
           <img src="https://raw.githubusercontent.com/dibiagi27/tablero-viajes/main/tablero-viajes/grupo_dibiagi.png" alt="Dibiagi" style={{ width: '270px', marginBottom: '20px' }} />
           <p style={{ color: '#64748b', fontSize: '13px' }}>Ingresá con tu usuario</p>
         </div>
-
         <form onSubmit={handleLogin}>
           <div className="form-group">
             <label>Email</label>
@@ -59,7 +58,6 @@ export default function Login() {
               required
             />
           </div>
-
           {error && (
             <div style={{
               background: '#fee2e2', color: '#dc2626',
@@ -69,7 +67,6 @@ export default function Login() {
               {error}
             </div>
           )}
-
           <button
             type="submit"
             className="btn btn-primary"
@@ -79,6 +76,14 @@ export default function Login() {
             {loading ? 'Ingresando...' : 'Ingresar'}
           </button>
         </form>
+        <p style={{
+          textAlign: 'center',
+          marginTop: '24px',
+          fontSize: '11px',
+          color: '#94a3b8'
+        }}>
+            Desarrollado por Lautaro Castell · Resp. Control de Procesos · 2026
+        </p>
       </div>
     </div>
   )
