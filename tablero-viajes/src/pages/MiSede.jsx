@@ -110,7 +110,7 @@ export default function MiSede({ perfil }) {
   const stats = {
     programados: viajes.filter(v => v.estado === 'Programado' && v.fecha_salida >= hoy).length,
     enRuta: viajes.filter(v => v.estado === 'Salió').length,
-    llegaronHoy: viajes.filter(v => v.estado === 'Llegó' && v.fecha_salida_real === hoy).length,
+    llegaronHoy: viajes.filter(v => v.estado === 'Llegó' && v.fecha_llegada === hoy).length,
   }
 
   function renderAcciones(v) {
@@ -193,6 +193,7 @@ export default function MiSede({ perfil }) {
                 <th>Zona de Influencia</th>
                 <th>F. Salida Programada</th>
                 <th>F. Salida Real</th>
+                <th>F. Llegada</th>
                 <th>Fiscal/Aduana</th>
                 <th>IMO</th>
                 <th>Importador</th>
@@ -203,10 +204,10 @@ export default function MiSede({ perfil }) {
             </thead>
             <tbody>
               {loading && (
-                <tr><td colSpan="11" style={{ textAlign: 'center', padding: '32px', color: '#64748b' }}>Cargando...</td></tr>
+                <tr><td colSpan="12" style={{ textAlign: 'center', padding: '32px', color: '#64748b' }}>Cargando...</td></tr>
               )}
               {!loading && filtrados.length === 0 && (
-                <tr><td colSpan="11">
+                <tr><td colSpan="12">
                   <div className="empty-state">
                     <div style={{ fontSize: '32px' }}>📋</div>
                     <p>No hay viajes cargados</p>
@@ -226,6 +227,9 @@ export default function MiSede({ perfil }) {
                     <td>{v.fecha_salida ? format(parseISO(v.fecha_salida), 'dd/MM/yyyy') : '—'}</td>
                     <td style={{ color: v.fecha_salida_real ? '#0a3622' : '#64748b', fontWeight: v.fecha_salida_real ? '600' : '400' }}>
                       {v.fecha_salida_real ? format(parseISO(v.fecha_salida_real), 'dd/MM/yyyy') : '—'}
+                    </td>
+                    <td style={{ color: v.fecha_llegada ? '#084298' : '#64748b', fontWeight: v.fecha_llegada ? '600' : '400' }}>
+                      {v.fecha_llegada ? format(parseISO(v.fecha_llegada), 'dd/MM/yyyy') : '—'}
                     </td>
                     <td style={{ color: '#64748b', fontSize: '12px' }}>{v.fiscal_aduana || '—'}</td>
                     <td className={v.imo ? 'imo-si' : 'imo-no'}>{v.imo ? 'SÍ' : 'No'}</td>
