@@ -4,14 +4,6 @@ import MiSede from './MiSede'
 import Resumen from './Resumen'
 import Admin from './Admin'
 
-const SEDE_FLAGS = {
-  Chile: '🇨🇱',
-  Mendoza: '🇦🇷',
-  'Buenos Aires': '🇦🇷',
-  Uruguay: '🇺🇾',
-  admin: '⚙️',
-}
-
 export default function Dashboard({ session, perfil }) {
   const isAdmin = perfil.sede === 'admin'
   const [tab, setTab] = useState(isAdmin ? 'resumen' : 'sede')
@@ -71,12 +63,11 @@ export default function Dashboard({ session, perfil }) {
               background: menuOpen ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.07)',
               border: '1px solid rgba(255,255,255,0.12)',
               borderRadius: '8px',
-              padding: '6px 12px',
+              padding: '6px 14px',
               cursor: 'pointer',
               transition: 'all 0.15s',
             }}
           >
-            <span style={{ fontSize: '16px' }}>{SEDE_FLAGS[perfil.sede] || '👤'}</span>
             <span style={{ color: '#fff', fontSize: '13px', fontWeight: '500' }}>
               {perfil.nombre}
             </span>
@@ -98,16 +89,6 @@ export default function Dashboard({ session, perfil }) {
               overflow: 'hidden',
               zIndex: 100,
             }}>
-              <div style={{
-                padding: '12px 16px',
-                borderBottom: '1px solid #f1f5f9',
-                background: '#f8fafc',
-              }}>
-                <div style={{ fontSize: '11px', color: '#64748b' }}>
-                  {SEDE_FLAGS[perfil.sede]} {perfil.sede === 'admin' ? 'Administrador' : `Sede ${perfil.sede}`}
-                </div>
-              </div>
-
               <button
                 onClick={handleLogout}
                 style={{
@@ -115,11 +96,11 @@ export default function Dashboard({ session, perfil }) {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  padding: '12px 16px',
+                  padding: '14px 16px',
                   background: 'transparent',
                   border: 'none',
                   cursor: 'pointer',
-                  fontSize: '13px',
+                  fontSize: '14px',
                   color: '#dc2626',
                   textAlign: 'left',
                   transition: 'background 0.15s',
