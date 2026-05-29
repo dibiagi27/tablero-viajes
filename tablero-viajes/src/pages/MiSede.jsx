@@ -120,7 +120,7 @@ export default function MiSede({ perfil }) {
     <div>
       <div className="page-header">
         <div>
-          <h1>Viajes desde {perfil.sede}</h1>
+          <h1>Viajes desde {perfil.sede} </h1>
           <p style={{ color: '#64748b', fontSize: '13px', marginTop: '2px' }}>
             Gestioná los viajes que salen de tu sede
           </p>
