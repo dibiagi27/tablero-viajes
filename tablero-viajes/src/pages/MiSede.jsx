@@ -108,9 +108,9 @@ export default function MiSede({ perfil }) {
   const hoy = new Date().toISOString().split('T')[0]
 
   const stats = {
-    programados: viajes.filter(v => v.estado === 'Programado').length,
-    salieron: viajes.filter(v => v.estado === 'Salió').length,
-    llegaron: viajes.filter(v => v.estado === 'Llegó').length,
+    programados: viajes.filter(v => v.estado === 'Programado' && v.fecha_salida >= hoy).length,
+    enRuta: viajes.filter(v => v.estado === 'Salió').length,
+    llegaronHoy: viajes.filter(v => v.estado === 'Llegó' && v.fecha_salida_real === hoy).length,
   }
 
   function renderAcciones(v) {
@@ -162,12 +162,12 @@ export default function MiSede({ perfil }) {
           <div className="value">{stats.programados}</div>
         </div>
         <div className="stat-card salio">
-          <div className="label">Salieron</div>
-          <div className="value">{stats.salieron}</div>
+          <div className="label">En ruta</div>
+          <div className="value">{stats.enRuta}</div>
         </div>
         <div className="stat-card llego">
-          <div className="label">Llegaron</div>
-          <div className="value">{stats.llegaron}</div>
+          <div className="label">Llegaron hoy</div>
+          <div className="value">{stats.llegaronHoy}</div>
         </div>
       </div>
 
@@ -245,7 +245,6 @@ export default function MiSede({ perfil }) {
         </div>
       </div>
 
-      {/* Modal incidente */}
       {modalIncidente && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setModalIncidente(false)}>
           <div className="modal" style={{ maxWidth: '440px' }}>
@@ -279,7 +278,6 @@ export default function MiSede({ perfil }) {
         </div>
       )}
 
-      {/* Modal cancelación */}
       {modalCancelacion && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setModalCancelacion(false)}>
           <div className="modal" style={{ maxWidth: '440px' }}>
