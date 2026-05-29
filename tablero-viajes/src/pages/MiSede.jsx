@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../supabaseClient'
 import ViajeModal from '../components/ViajeModal'
-import { format, isToday, parseISO } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { format, parseISO } from 'date-fns'
 
 export default function MiSede({ perfil }) {
   const [viajes, setViajes] = useState([])
@@ -13,12 +12,10 @@ export default function MiSede({ perfil }) {
 
   useEffect(() => {
     fetchViajes()
-
     const channel = supabase
       .channel('viajes-sede')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'viajes' }, fetchViajes)
       .subscribe()
-
     return () => supabase.removeChannel(channel)
   }, [])
 
@@ -37,16 +34,7 @@ export default function MiSede({ perfil }) {
     if (nuevoEstado === 'Salió' && !viaje.fecha_salida_real) {
       update.fecha_salida_real = new Date().toISOString().split('T')[0]
     }
-    await supabase
-      .from('viajes')
-      .update(update)
-      .eq('id', viaje.id)
-    fetchViajes()
-  }
-
-  async function eliminar(id) {
-    if (!confirm('¿Eliminar este viaje?')) return
-    await supabase.from('viajes').delete().eq('id', id)
+    await supabase.from('viajes').update(update).eq('id', viaje.id)
     fetchViajes()
   }
 
@@ -64,9 +52,42 @@ export default function MiSede({ perfil }) {
   const hoy = new Date().toISOString().split('T')[0]
 
   const stats = {
-    programados: viajes.filter(v => v.estado === 'Programado').length,
+    programados: viajes.filter(v => v.estado === 'Programado' || v.estado === 'Reprogramado').length,
     salieron: viajes.filter(v => v.estado === 'Salió').length,
     llegaron: viajes.filter(v => v.estado === 'Llegó').length,
+  }
+
+  function renderAcciones(v) {
+    if (v.estado === 'Programado' || v.estado === 'Reprogramado') {
+      return (
+        <>
+          <button className="btn btn-sm" style={{ background: '#d1e7dd', color: '#0a3622', border: 'none' }}
+            onClick={() => cambiarEstado(v, 'Salió')}>
+            ✓ Salió
+          </button>
+          <button className="btn btn-sm" style={{ background: '#fff3cd', color: '#856404', border: 'none' }}
+            onClick={() => cambiarEstado(v, 'Reprogramado')}>
+            ↺ Reprogramar
+          </button>
+          <button className="btn btn-sm" style={{ background: '#f8d7da', color: '#842029', border: 'none' }}
+            onClick={() => cambiarEstado(v, 'Cancelado')}>
+            ✕ Cancelar
+          </button>
+          <button className="btn btn-ghost btn-sm" onClick={() => abrirEdicion(v)}>
+            Editar
+          </button>
+        </>
+      )
+    }
+    if (v.estado === 'Salió') {
+      return (
+        <button className="btn btn-sm" style={{ background: '#fff3cd', color: '#856404', border: 'none' }}
+          onClick={() => cambiarEstado(v, 'Incidente')}>
+          ⚠ Incidente
+        </button>
+      )
+    }
+    return null
   }
 
   return (
@@ -83,7 +104,6 @@ export default function MiSede({ perfil }) {
         </button>
       </div>
 
-      {/* Stats */}
       <div className="stat-cards">
         <div className="stat-card programado">
           <div className="label">Programados</div>
@@ -99,10 +119,9 @@ export default function MiSede({ perfil }) {
         </div>
       </div>
 
-      {/* Filtros */}
       <div className="filters">
         <span style={{ fontSize: '12px', color: '#64748b', fontWeight: '600' }}>FILTRAR:</span>
-        {['', 'Programado', 'Salió', 'Llegó'].map(e => (
+        {['', 'Programado', 'Reprogramado', 'Salió', 'Incidente', 'Cancelado', 'Llegó'].map(e => (
           <button
             key={e}
             className={`filter-btn ${filtroEstado === e ? 'active' : ''}`}
@@ -113,7 +132,6 @@ export default function MiSede({ perfil }) {
         ))}
       </div>
 
-      {/* Tabla */}
       <div className="card">
         <div className="table-wrap">
           <table>
@@ -121,8 +139,9 @@ export default function MiSede({ perfil }) {
               <tr>
                 <th>Interno</th>
                 <th>Semi</th>
-                <th>Destino</th>
-                <th>Fecha Salida</th>
+                <th>Zona de Influencia</th>
+                <th>F. Salida Programada</th>
+                <th>F. Salida Real</th>
                 <th>Fiscal/Aduana</th>
                 <th>IMO</th>
                 <th>Importador</th>
@@ -133,10 +152,10 @@ export default function MiSede({ perfil }) {
             </thead>
             <tbody>
               {loading && (
-                <tr><td colSpan="10" style={{ textAlign: 'center', padding: '32px', color: '#64748b' }}>Cargando...</td></tr>
+                <tr><td colSpan="11" style={{ textAlign: 'center', padding: '32px', color: '#64748b' }}>Cargando...</td></tr>
               )}
               {!loading && filtrados.length === 0 && (
-                <tr><td colSpan="10">
+                <tr><td colSpan="11">
                   <div className="empty-state">
                     <div style={{ fontSize: '32px' }}>📋</div>
                     <p>No hay viajes cargados</p>
@@ -154,6 +173,9 @@ export default function MiSede({ perfil }) {
                     <td style={{ color: '#64748b' }}>{v.semi || '—'}</td>
                     <td><strong>{v.destino || '—'}</strong></td>
                     <td>{v.fecha_salida ? format(parseISO(v.fecha_salida), 'dd/MM/yyyy') : '—'}</td>
+                    <td style={{ color: v.fecha_salida_real ? '#0a3622' : '#64748b', fontWeight: v.fecha_salida_real ? '600' : '400' }}>
+                      {v.fecha_salida_real ? format(parseISO(v.fecha_salida_real), 'dd/MM/yyyy') : '—'}
+                    </td>
                     <td style={{ color: '#64748b', fontSize: '12px' }}>{v.fiscal_aduana || '—'}</td>
                     <td className={v.imo ? 'imo-si' : 'imo-no'}>{v.imo ? 'SÍ' : 'No'}</td>
                     <td style={{ color: '#64748b', fontSize: '12px' }}>{v.importador || '—'}</td>
@@ -161,27 +183,7 @@ export default function MiSede({ perfil }) {
                     <td style={{ color: '#64748b', fontSize: '12px', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.observacion || '—'}</td>
                     <td>
                       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                       {v.estado === 'Programado' && (
-  <button className="btn btn-sm" style={{ background: '#d1e7dd', color: '#0a3622', border: 'none' }}
-    onClick={() => cambiarEstado(v, 'Salió')}>
-    ✓ Salió
-  </button>
-)}
-{(v.estado === 'Programado' || v.estado === 'Salió') && (
-  <button className="btn btn-sm" style={{ background: '#fff3cd', color: '#856404', border: 'none' }}
-    onClick={() => cambiarEstado(v, 'Reprogramado')}>
-    ↺ Reprogramar
-  </button>
-)}
-{v.estado !== 'Llegó' && v.estado !== 'Cancelado' && (
-  <button className="btn btn-sm" style={{ background: '#f8d7da', color: '#842029', border: 'none' }}
-    onClick={() => cambiarEstado(v, 'Cancelado')}>
-    ✕ Cancelar
-  </button>
-)}
-{v.estado !== 'Llegó' && (
-                          <button className="btn btn-ghost btn-sm" onClick={() => abrirEdicion(v)}>Editar</button>
-                        )}
+                        {renderAcciones(v)}
                       </div>
                     </td>
                   </tr>
