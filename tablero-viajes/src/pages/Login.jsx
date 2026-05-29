@@ -34,9 +34,8 @@ export default function Login() {
         boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
       }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{ fontSize: '36px', marginBottom: '8px' }}>🚛</div>
-          <h1 style={{ fontSize: '22px', fontWeight: '700', color: '#1a202c' }}>Tablero de Viajes</h1>
-          <p style={{ color: '#64748b', fontSize: '13px', marginTop: '4px' }}>Ingresá con tu usuario</p>
+          <img src="/grupo_dibiagi.png" alt="Dibiagi" style={{ width: '200px', marginBottom: '20px' }} />
+          <p style={{ color: '#64748b', fontSize: '13px' }}>Ingresá con tu usuario</p>
         </div>
 
         <form onSubmit={handleLogin}>
