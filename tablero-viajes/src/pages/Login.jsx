@@ -79,10 +79,10 @@ export default function Login() {
         <p style={{
           textAlign: 'center',
           marginTop: '24px',
-          fontSize: '11px',
-          color: '#94a3b8'
+          fontSize: '13px',
+          color: '#475569'
         }}>
-            Desarrollado por Lautaro Castell · Resp. Control de Procesos · 2026
+            Desarrollado por Lautaro Castell · Resp. Control de Procesos
         </p>
       </div>
     </div>
