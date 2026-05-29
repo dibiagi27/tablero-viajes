@@ -158,16 +158,15 @@ export default function ViajeModal({ perfil, viaje, onClose, onSave, isAdmin }) 
                 <option value="si">Sí</option>
               </select>
             </div>
-           {viaje && (
- {viaje && (
-  <div className="form-group">
-    <label>Estado</label>
-    <select value={form.estado} onChange={e => handleEstadoChange(e.target.value)}>
-      <option>Programado</option>
-      <option>Cancelado</option>
-    </select>
-  </div>
-)}
+            {viaje && (
+              <div className="form-group">
+                <label>Estado</label>
+                <select value={form.estado} onChange={e => handleEstadoChange(e.target.value)}>
+                  <option>Programado</option>
+                  <option>Cancelado</option>
+                </select>
+              </div>
+            )}
           </div>
 
           {form.estado === 'Salió' && (
