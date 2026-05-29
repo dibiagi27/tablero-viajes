@@ -13,9 +13,9 @@ const SEDE_COLORS = {
 }
 
 export default function Dashboard({ session, perfil }) {
-  const [tab, setTab] = useState('sede')
-  const sedeColor = SEDE_COLORS[perfil.sede] || SEDE_COLORS.admin
   const isAdmin = perfil.sede === 'admin'
+  const [tab, setTab] = useState(isAdmin ? 'resumen' : 'sede')
+  const sedeColor = SEDE_COLORS[perfil.sede] || SEDE_COLORS.admin
 
   async function handleLogout() {
     await supabase.auth.signOut()
@@ -23,7 +23,6 @@ export default function Dashboard({ session, perfil }) {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Navbar */}
       <nav style={{
         background: '#1a1f2e',
         padding: '0 24px',
@@ -50,7 +49,6 @@ export default function Dashboard({ session, perfil }) {
             )}
           </div>
         </div>
-
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <span style={{
             background: sedeColor.bg,
@@ -79,8 +77,6 @@ export default function Dashboard({ session, perfil }) {
           </button>
         </div>
       </nav>
-
-      {/* Content */}
       <main style={{ flex: 1, padding: '24px', maxWidth: '1400px', width: '100%', margin: '0 auto' }}>
         {tab === 'sede' && !isAdmin && <MiSede perfil={perfil} />}
         {tab === 'resumen' && <Resumen perfil={perfil} />}
