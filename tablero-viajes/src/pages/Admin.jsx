@@ -154,13 +154,12 @@ export default function Admin() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
               <h3 style={{ fontSize: '15px' }}>Usuarios activos</h3>
               
-                href="https://supabase.com/dashboard/project/jqxwovzumylkykoocakw/auth/users"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-primary btn-sm"
-              >
-                + Crear usuario
-              </a>
+                <button
+  className="btn btn-primary btn-sm"
+  onClick={() => window.open('https://supabase.com/dashboard/project/jqxwovzumylkykoocakw/auth/users', '_blank')}
+>
+  + Crear usuario
+</button>
             </div>
             {usuarios.map(u => (
               <div key={u.id} style={{
