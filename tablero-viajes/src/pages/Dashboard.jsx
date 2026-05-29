@@ -59,19 +59,19 @@ export default function Dashboard({ session, perfil }) {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
+              gap: '6px',
               background: menuOpen ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.07)',
               border: '1px solid rgba(255,255,255,0.12)',
               borderRadius: '8px',
-              padding: '6px 14px',
+              padding: '5px 10px',
               cursor: 'pointer',
               transition: 'all 0.15s',
             }}
           >
-            <span style={{ color: '#fff', fontSize: '13px', fontWeight: '500' }}>
+            <span style={{ color: '#fff', fontSize: '12px', fontWeight: '500' }}>
               {perfil.nombre}
             </span>
-            <span style={{ color: '#94a3b8', fontSize: '10px' }}>
+            <span style={{ color: '#94a3b8', fontSize: '9px' }}>
               {menuOpen ? '▲' : '▼'}
             </span>
           </button>
@@ -80,12 +80,13 @@ export default function Dashboard({ session, perfil }) {
             <div style={{
               position: 'absolute',
               right: 0,
-              top: 'calc(100% + 8px)',
+              top: 'calc(100% + 6px)',
               background: '#fff',
-              borderRadius: '10px',
+              borderRadius: '8px',
               boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
               border: '1px solid #e2e8f0',
-              minWidth: '180px',
+              minWidth: '0',
+              width: '100%',
               overflow: 'hidden',
               zIndex: 100,
             }}>
@@ -95,14 +96,15 @@ export default function Dashboard({ session, perfil }) {
                   width: '100%',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  padding: '14px 16px',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  padding: '10px 14px',
                   background: 'transparent',
                   border: 'none',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: '12px',
                   color: '#dc2626',
-                  textAlign: 'left',
+                  whiteSpace: 'nowrap',
                   transition: 'background 0.15s',
                 }}
                 onMouseEnter={e => e.currentTarget.style.background = '#fef2f2'}
