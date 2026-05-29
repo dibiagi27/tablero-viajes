@@ -12,6 +12,9 @@ export default function MiSede({ perfil }) {
   const [modalIncidente, setModalIncidente] = useState(false)
   const [viajeIncidente, setViajeIncidente] = useState(null)
   const [detalleIncidente, setDetalleIncidente] = useState('')
+  const [modalCancelacion, setModalCancelacion] = useState(false)
+  const [viajeCancelacion, setViajeCancelacion] = useState(null)
+  const [motivoCancelacion, setMotivoCancelacion] = useState('')
 
   useEffect(() => {
     fetchViajes()
@@ -50,15 +53,32 @@ export default function MiSede({ perfil }) {
     const fechaHora = `${ahora.toLocaleDateString('es-AR')} ${ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}`
     const obsAnterior = viajeIncidente.observacion ? viajeIncidente.observacion + ' | ' : ''
     const nuevaObs = `${obsAnterior}INCIDENTE ${fechaHora}: ${detalleIncidente.trim()}`
-
     await supabase.from('viajes').update({
       estado: 'Incidente',
       observacion: nuevaObs
     }).eq('id', viajeIncidente.id)
-
     setModalIncidente(false)
     setViajeIncidente(null)
     setDetalleIncidente('')
+    fetchViajes()
+  }
+
+  async function confirmarCancelacion() {
+    if (!motivoCancelacion.trim()) {
+      alert('Por favor indicá el motivo de la cancelación')
+      return
+    }
+    const ahora = new Date()
+    const fechaHora = `${ahora.toLocaleDateString('es-AR')} ${ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}`
+    const obsAnterior = viajeCancelacion.observacion ? viajeCancelacion.observacion + ' | ' : ''
+    const nuevaObs = `${obsAnterior}CANCELADO ${fechaHora}: ${motivoCancelacion.trim()}`
+    await supabase.from('viajes').update({
+      estado: 'Cancelado',
+      observacion: nuevaObs
+    }).eq('id', viajeCancelacion.id)
+    setModalCancelacion(false)
+    setViajeCancelacion(null)
+    setMotivoCancelacion('')
     fetchViajes()
   }
 
@@ -66,6 +86,12 @@ export default function MiSede({ perfil }) {
     setViajeIncidente(viaje)
     setDetalleIncidente('')
     setModalIncidente(true)
+  }
+
+  function abrirCancelacion(viaje) {
+    setViajeCancelacion(viaje)
+    setMotivoCancelacion('')
+    setModalCancelacion(true)
   }
 
   function abrirEdicion(viaje) {
@@ -96,7 +122,7 @@ export default function MiSede({ perfil }) {
             ✓ Salió
           </button>
           <button className="btn btn-sm" style={{ background: '#f8d7da', color: '#842029', border: 'none' }}
-            onClick={() => cambiarEstado(v, 'Cancelado')}>
+            onClick={() => abrirCancelacion(v)}>
             ✕ Cancelar
           </button>
           <button className="btn btn-ghost btn-sm" onClick={() => abrirEdicion(v)}>
@@ -120,7 +146,7 @@ export default function MiSede({ perfil }) {
     <div>
       <div className="page-header">
         <div>
-          <h1>Viajes desde {perfil.sede} </h1>
+          <h1>Viajes desde {perfil.sede}</h1>
           <p style={{ color: '#64748b', fontSize: '13px', marginTop: '2px' }}>
             Gestioná los viajes que salen de tu sede
           </p>
@@ -244,9 +270,43 @@ export default function MiSede({ perfil }) {
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-ghost" onClick={() => setModalIncidente(false)}>Cancelar</button>
+              <button className="btn btn-ghost" onClick={() => setModalIncidente(false)}>Volver</button>
               <button className="btn btn-primary" onClick={confirmarIncidente}>
                 Confirmar incidente
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal cancelación */}
+      {modalCancelacion && (
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setModalCancelacion(false)}>
+          <div className="modal" style={{ maxWidth: '440px' }}>
+            <div className="modal-header">
+              <h3>✕ Cancelar viaje</h3>
+              <button className="close-btn" onClick={() => setModalCancelacion(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '16px' }}>
+                Interno <strong>{viajeCancelacion?.interno}</strong> — indicá el motivo:
+              </p>
+              <div className="form-group">
+                <label>Motivo de cancelación</label>
+                <textarea
+                  value={motivoCancelacion}
+                  onChange={e => setMotivoCancelacion(e.target.value)}
+                  placeholder="Ej: Camión sin disponibilidad, reprogramado para la semana próxima..."
+                  rows={4}
+                  style={{ resize: 'vertical' }}
+                  autoFocus
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-ghost" onClick={() => setModalCancelacion(false)}>Volver</button>
+              <button className="btn btn-danger" onClick={confirmarCancelacion}>
+                Confirmar cancelación
               </button>
             </div>
           </div>
