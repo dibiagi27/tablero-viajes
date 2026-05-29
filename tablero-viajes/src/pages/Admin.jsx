@@ -58,7 +58,7 @@ export default function Admin() {
   return (
     <div>
       <div className="page-header">
-        <h1>⚙️ Panel de administración</h1>
+        <h1>⚙️ Panel de Administración</h1>
       </div>
 
       <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
