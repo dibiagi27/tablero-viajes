@@ -9,6 +9,9 @@ export default function MiSede({ perfil }) {
   const [modal, setModal] = useState(false)
   const [editando, setEditando] = useState(null)
   const [filtroEstado, setFiltroEstado] = useState('')
+  const [modalIncidente, setModalIncidente] = useState(false)
+  const [viajeIncidente, setViajeIncidente] = useState(null)
+  const [detalleIncidente, setDetalleIncidente] = useState('')
 
   useEffect(() => {
     fetchViajes()
@@ -38,6 +41,33 @@ export default function MiSede({ perfil }) {
     fetchViajes()
   }
 
+  async function confirmarIncidente() {
+    if (!detalleIncidente.trim()) {
+      alert('Por favor describí el incidente')
+      return
+    }
+    const ahora = new Date()
+    const fechaHora = `${ahora.toLocaleDateString('es-AR')} ${ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}`
+    const obsAnterior = viajeIncidente.observacion ? viajeIncidente.observacion + ' | ' : ''
+    const nuevaObs = `${obsAnterior}INCIDENTE ${fechaHora}: ${detalleIncidente.trim()}`
+
+    await supabase.from('viajes').update({
+      estado: 'Incidente',
+      observacion: nuevaObs
+    }).eq('id', viajeIncidente.id)
+
+    setModalIncidente(false)
+    setViajeIncidente(null)
+    setDetalleIncidente('')
+    fetchViajes()
+  }
+
+  function abrirIncidente(viaje) {
+    setViajeIncidente(viaje)
+    setDetalleIncidente('')
+    setModalIncidente(true)
+  }
+
   function abrirEdicion(viaje) {
     setEditando(viaje)
     setModal(true)
@@ -52,22 +82,18 @@ export default function MiSede({ perfil }) {
   const hoy = new Date().toISOString().split('T')[0]
 
   const stats = {
-    programados: viajes.filter(v => v.estado === 'Programado' || v.estado === 'Reprogramado').length,
+    programados: viajes.filter(v => v.estado === 'Programado').length,
     salieron: viajes.filter(v => v.estado === 'Salió').length,
     llegaron: viajes.filter(v => v.estado === 'Llegó').length,
   }
 
   function renderAcciones(v) {
-    if (v.estado === 'Programado' || v.estado === 'Reprogramado') {
+    if (v.estado === 'Programado') {
       return (
         <>
           <button className="btn btn-sm" style={{ background: '#d1e7dd', color: '#0a3622', border: 'none' }}
             onClick={() => cambiarEstado(v, 'Salió')}>
             ✓ Salió
-          </button>
-          <button className="btn btn-sm" style={{ background: '#fff3cd', color: '#856404', border: 'none' }}
-            onClick={() => cambiarEstado(v, 'Reprogramado')}>
-            ↺ Reprogramar
           </button>
           <button className="btn btn-sm" style={{ background: '#f8d7da', color: '#842029', border: 'none' }}
             onClick={() => cambiarEstado(v, 'Cancelado')}>
@@ -82,7 +108,7 @@ export default function MiSede({ perfil }) {
     if (v.estado === 'Salió') {
       return (
         <button className="btn btn-sm" style={{ background: '#fff3cd', color: '#856404', border: 'none' }}
-          onClick={() => cambiarEstado(v, 'Incidente')}>
+          onClick={() => abrirIncidente(v)}>
           ⚠ Incidente
         </button>
       )
@@ -121,15 +147,14 @@ export default function MiSede({ perfil }) {
 
       <div className="filters">
         <span style={{ fontSize: '12px', color: '#64748b', fontWeight: '600' }}>FILTRAR:</span>
-        {['', 'Programado', 'Reprogramado', 'Salió', 'Incidente', 'Cancelado', 'Llegó'].map(e => (
-          <button
-            key={e}
-            className={`filter-btn ${filtroEstado === e ? 'active' : ''}`}
-            onClick={() => setFiltroEstado(e)}
-          >
-            {e || 'Todos'}
-          </button>
-        ))}
+        <select value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
+          <option value="">Todos</option>
+          <option>Programado</option>
+          <option>Salió</option>
+          <option>Incidente</option>
+          <option>Cancelado</option>
+          <option>Llegó</option>
+        </select>
       </div>
 
       <div className="card">
@@ -180,7 +205,7 @@ export default function MiSede({ perfil }) {
                     <td className={v.imo ? 'imo-si' : 'imo-no'}>{v.imo ? 'SÍ' : 'No'}</td>
                     <td style={{ color: '#64748b', fontSize: '12px' }}>{v.importador || '—'}</td>
                     <td><span className={`badge badge-${v.estado?.toLowerCase().replace('ó','o').replace('é','e')}`}>{v.estado}</span></td>
-                    <td style={{ color: '#64748b', fontSize: '12px', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.observacion || '—'}</td>
+                    <td style={{ color: '#64748b', fontSize: '12px', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={v.observacion || ''}>{v.observacion || '—'}</td>
                     <td>
                       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                         {renderAcciones(v)}
@@ -193,6 +218,40 @@ export default function MiSede({ perfil }) {
           </table>
         </div>
       </div>
+
+      {/* Modal incidente */}
+      {modalIncidente && (
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setModalIncidente(false)}>
+          <div className="modal" style={{ maxWidth: '440px' }}>
+            <div className="modal-header">
+              <h3>⚠ Registrar incidente</h3>
+              <button className="close-btn" onClick={() => setModalIncidente(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '16px' }}>
+                Interno <strong>{viajeIncidente?.interno}</strong> — describí qué pasó:
+              </p>
+              <div className="form-group">
+                <label>Detalle del incidente</label>
+                <textarea
+                  value={detalleIncidente}
+                  onChange={e => setDetalleIncidente(e.target.value)}
+                  placeholder="Ej: Camión con desperfecto mecánico en ruta 40, km 230..."
+                  rows={4}
+                  style={{ resize: 'vertical' }}
+                  autoFocus
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-ghost" onClick={() => setModalIncidente(false)}>Cancelar</button>
+              <button className="btn btn-primary" onClick={confirmarIncidente}>
+                Confirmar incidente
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {modal && (
         <ViajeModal
