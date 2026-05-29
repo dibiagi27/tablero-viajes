@@ -7,6 +7,7 @@ const ADUANAS = [
   'Puerto Seco (Mza)',
   'PTM',
   'Aduana Buenos Aires',
+  'Aduana Uruguay',
   'Sin aduana',
 ]
 
