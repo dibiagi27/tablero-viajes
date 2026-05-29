@@ -82,8 +82,7 @@ export default function Login() {
           fontSize: '13px',
           color: '#475569'
         }}>
-            Desarrollado por Lautaro Castell<br />
-          Resp. Control de Procesos
+            Desarrollado por Lautaro Castell
         </p>
       </div>
     </div>
