@@ -69,7 +69,7 @@ export default function Resumen({ perfil }) {
     <div>
       <div className="page-header">
         <div>
-          <h1>Resumen general</h1>
+          <h1>Resumen General</h1>
           <p style={{ color: '#64748b', fontSize: '13px', marginTop: '2px' }}>
             Todos los viajes de todas las sedes en tiempo real
           </p>
