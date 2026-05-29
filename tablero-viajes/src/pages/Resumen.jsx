@@ -55,9 +55,10 @@ export default function Resumen({ perfil }) {
   })
 
   const stats = {
-    programados: viajes.filter(v => v.estado === 'Programado').length,
-    salieron: viajes.filter(v => v.estado === 'Salió').length,
-    llegaron: viajes.filter(v => v.estado === 'Llegó').length,
+    programados: viajes.filter(v => v.estado === 'Programado' && v.fecha_salida >= hoy).length,
+    enRuta: viajes.filter(v => v.estado === 'Salió').length,
+    llegaron: viajes.filter(v => v.estado === 'Llegó' && v.fecha_salida_real === hoy).length,
+    manana: viajes.filter(v => v.estado === 'Programado' && v.fecha_salida === manana).length,
   }
 
   const puedeMarcarLlego = (v) => {
@@ -83,15 +84,15 @@ export default function Resumen({ perfil }) {
         </div>
         <div className="stat-card salio">
           <div className="label">En ruta</div>
-          <div className="value">{stats.salieron}</div>
+          <div className="value">{stats.enRuta}</div>
         </div>
         <div className="stat-card llego">
-          <div className="label">Llegaron</div>
+          <div className="label">Llegaron hoy</div>
           <div className="value">{stats.llegaron}</div>
         </div>
         <div className="stat-card manana">
-          <div className="label">Programados</div>
-          <div className="value">{viajes.filter(v => v.estado === 'Programado').length}</div>
+          <div className="label">Programados mañana</div>
+          <div className="value">{stats.manana}</div>
         </div>
       </div>
 
@@ -116,6 +117,8 @@ export default function Resumen({ perfil }) {
           <option value="">Todos los estados</option>
           <option>Programado</option>
           <option>Salió</option>
+          <option>Incidente</option>
+          <option>Cancelado</option>
           <option>Llegó</option>
         </select>
         <input
