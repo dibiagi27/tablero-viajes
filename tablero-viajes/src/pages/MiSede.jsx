@@ -179,8 +179,7 @@ export default function MiSede({ perfil }) {
     ✕ Cancelar
   </button>
 )}
-                        )}
-                        {v.estado !== 'Llegó' && (
+{v.estado !== 'Llegó' && (
                           <button className="btn btn-ghost btn-sm" onClick={() => abrirEdicion(v)}>Editar</button>
                         )}
                       </div>
