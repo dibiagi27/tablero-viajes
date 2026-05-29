@@ -22,7 +22,6 @@ export default function Dashboard({ session, perfil }) {
     await supabase.auth.signOut()
   }
 
-  // Cerrar el menú si se hace click afuera
   useEffect(() => {
     function handleClickOutside(e) {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -62,7 +61,6 @@ export default function Dashboard({ session, perfil }) {
           </div>
         </div>
 
-        {/* Menú de usuario */}
         <div ref={menuRef} style={{ position: 'relative' }}>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -96,25 +94,20 @@ export default function Dashboard({ session, perfil }) {
               borderRadius: '10px',
               boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
               border: '1px solid #e2e8f0',
-              minWidth: '200px',
+              minWidth: '180px',
               overflow: 'hidden',
               zIndex: 100,
             }}>
-              {/* Info del usuario */}
               <div style={{
-                padding: '14px 16px',
+                padding: '12px 16px',
                 borderBottom: '1px solid #f1f5f9',
                 background: '#f8fafc',
               }}>
-                <div style={{ fontSize: '13px', fontWeight: '600', color: '#1e293b' }}>
-                  {perfil.nombre}
-                </div>
-                <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                <div style={{ fontSize: '11px', color: '#64748b' }}>
                   {SEDE_FLAGS[perfil.sede]} {perfil.sede === 'admin' ? 'Administrador' : `Sede ${perfil.sede}`}
                 </div>
               </div>
 
-              {/* Cerrar sesión */}
               <button
                 onClick={handleLogout}
                 style={{
@@ -134,7 +127,7 @@ export default function Dashboard({ session, perfil }) {
                 onMouseEnter={e => e.currentTarget.style.background = '#fef2f2'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
               >
-                🚪 Cerrar sesión
+                ↪ Cerrar sesión
               </button>
             </div>
           )}
