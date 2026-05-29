@@ -13,6 +13,7 @@ export default function ViajeModal({ perfil, viaje, onClose, onSave, isAdmin }) 
     semi: '',
     destino: '',
     fecha_salida: '',
+    fecha_salida_real: '',
     fiscal_aduana: '',
     imo: false,
     importador: '',
@@ -30,6 +31,7 @@ export default function ViajeModal({ perfil, viaje, onClose, onSave, isAdmin }) 
         semi: viaje.semi || '',
         destino: viaje.destino || '',
         fecha_salida: viaje.fecha_salida || '',
+        fecha_salida_real: viaje.fecha_salida_real || '',
         fiscal_aduana: viaje.fiscal_aduana || '',
         imo: viaje.imo || false,
         importador: viaje.importador || '',
@@ -42,6 +44,13 @@ export default function ViajeModal({ perfil, viaje, onClose, onSave, isAdmin }) 
 
   const set = (field, value) => setForm(f => ({ ...f, [field]: value }))
 
+  function handleEstadoChange(nuevoEstado) {
+    set('estado', nuevoEstado)
+    if (nuevoEstado === 'Salió' && !form.fecha_salida_real) {
+      set('fecha_salida_real', new Date().toISOString().split('T')[0])
+    }
+  }
+
   async function handleSave() {
     if (!form.interno.trim()) { setError('El N° Interno es obligatorio'); return }
     setLoading(true)
@@ -52,6 +61,7 @@ export default function ViajeModal({ perfil, viaje, onClose, onSave, isAdmin }) 
       semi: form.semi.trim() || null,
       destino: form.destino || null,
       fecha_salida: form.fecha_salida || null,
+      fecha_salida_real: form.fecha_salida_real || null,
       fiscal_aduana: form.fiscal_aduana || null,
       imo: form.imo,
       importador: form.importador.trim() || null,
@@ -110,14 +120,14 @@ export default function ViajeModal({ perfil, viaje, onClose, onSave, isAdmin }) 
 
           <div className="form-row">
             <div className="form-group">
-              <label>Destino</label>
+              <label>Zona de Influencia</label>
               <select value={form.destino} onChange={e => set('destino', e.target.value)}>
                 <option value="">Seleccionar...</option>
                 {destinos.map(d => <option key={d}>{d}</option>)}
               </select>
             </div>
             <div className="form-group">
-              <label>Fecha de salida</label>
+              <label>Fecha Salida Programada</label>
               <input type="date" value={form.fecha_salida} onChange={e => set('fecha_salida', e.target.value)} />
             </div>
           </div>
@@ -146,13 +156,24 @@ export default function ViajeModal({ perfil, viaje, onClose, onSave, isAdmin }) 
             </div>
             <div className="form-group">
               <label>Estado</label>
-              <select value={form.estado} onChange={e => set('estado', e.target.value)}>
+              <select value={form.estado} onChange={e => handleEstadoChange(e.target.value)}>
                 <option>Programado</option>
                 <option>Salió</option>
                 <option>Llegó</option>
               </select>
             </div>
           </div>
+
+          {form.estado === 'Salió' && (
+            <div className="form-group">
+              <label>Fecha Salida Real</label>
+              <input
+                type="date"
+                value={form.fecha_salida_real}
+                onChange={e => set('fecha_salida_real', e.target.value)}
+              />
+            </div>
+          )}
 
           <div className="form-group">
             <label>Observación</label>
