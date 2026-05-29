@@ -57,8 +57,7 @@ export default function Resumen({ perfil }) {
   const stats = {
     programados: viajes.filter(v => v.estado === 'Programado' && v.fecha_salida >= hoy).length,
     enRuta: viajes.filter(v => v.estado === 'Salió').length,
-    llegaron: viajes.filter(v => v.estado === 'Llegó' && v.fecha_salida_real === hoy).length,
-    manana: viajes.filter(v => v.estado === 'Programado' && v.fecha_salida === manana).length,
+    llegaHoy: viajes.filter(v => v.estado === 'Llegó' && v.fecha_salida_real === hoy).length,
   }
 
   const puedeMarcarLlego = (v) => {
@@ -88,11 +87,7 @@ export default function Resumen({ perfil }) {
         </div>
         <div className="stat-card llego">
           <div className="label">Llegaron hoy</div>
-          <div className="value">{stats.llegaron}</div>
-        </div>
-        <div className="stat-card manana">
-          <div className="label">Programados mañana</div>
-          <div className="value">{stats.manana}</div>
+          <div className="value">{stats.llegaHoy}</div>
         </div>
       </div>
 
