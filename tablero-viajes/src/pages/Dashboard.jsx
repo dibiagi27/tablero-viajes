@@ -1,25 +1,37 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { supabase } from '../supabaseClient'
 import MiSede from './MiSede'
 import Resumen from './Resumen'
 import Admin from './Admin'
 
-const SEDE_COLORS = {
-  Chile: { bg: '#EEEDFE', color: '#3C3489' },
-  Mendoza: { bg: '#FEF3E2', color: '#7A4500' },
-  'Buenos Aires': { bg: '#E2F4EC', color: '#0A5C3E' },
-  Uruguay: { bg: '#FDEEE8', color: '#7A2A10' },
-  admin: { bg: '#f1f5f9', color: '#475569' },
+const SEDE_FLAGS = {
+  Chile: '🇨🇱',
+  Mendoza: '🇦🇷',
+  'Buenos Aires': '🇦🇷',
+  Uruguay: '🇺🇾',
+  admin: '⚙️',
 }
 
 export default function Dashboard({ session, perfil }) {
   const isAdmin = perfil.sede === 'admin'
   const [tab, setTab] = useState(isAdmin ? 'resumen' : 'sede')
-  const sedeColor = SEDE_COLORS[perfil.sede] || SEDE_COLORS.admin
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef(null)
 
   async function handleLogout() {
     await supabase.auth.signOut()
   }
+
+  // Cerrar el menú si se hace click afuera
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -49,34 +61,86 @@ export default function Dashboard({ session, perfil }) {
             )}
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{
-            background: sedeColor.bg,
-            color: sedeColor.color,
-            padding: '4px 12px',
-            borderRadius: '99px',
-            fontSize: '12px',
-            fontWeight: '600',
-          }}>
-            {isAdmin ? '⚙️ Admin' : perfil.sede}
-          </span>
-          <span style={{ color: '#94a3b8', fontSize: '12px' }}>{perfil.nombre}</span>
+
+        {/* Menú de usuario */}
+        <div ref={menuRef} style={{ position: 'relative' }}>
           <button
-            onClick={handleLogout}
+            onClick={() => setMenuOpen(!menuOpen)}
             style={{
-              background: 'transparent',
-              border: '1px solid #334155',
-              color: '#94a3b8',
-              padding: '5px 12px',
-              borderRadius: '6px',
-              fontSize: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: menuOpen ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.07)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: '8px',
+              padding: '6px 12px',
               cursor: 'pointer',
+              transition: 'all 0.15s',
             }}
           >
-            Salir
+            <span style={{ fontSize: '16px' }}>{SEDE_FLAGS[perfil.sede] || '👤'}</span>
+            <span style={{ color: '#fff', fontSize: '13px', fontWeight: '500' }}>
+              {perfil.nombre}
+            </span>
+            <span style={{ color: '#94a3b8', fontSize: '10px' }}>
+              {menuOpen ? '▲' : '▼'}
+            </span>
           </button>
+
+          {menuOpen && (
+            <div style={{
+              position: 'absolute',
+              right: 0,
+              top: 'calc(100% + 8px)',
+              background: '#fff',
+              borderRadius: '10px',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+              border: '1px solid #e2e8f0',
+              minWidth: '200px',
+              overflow: 'hidden',
+              zIndex: 100,
+            }}>
+              {/* Info del usuario */}
+              <div style={{
+                padding: '14px 16px',
+                borderBottom: '1px solid #f1f5f9',
+                background: '#f8fafc',
+              }}>
+                <div style={{ fontSize: '13px', fontWeight: '600', color: '#1e293b' }}>
+                  {perfil.nombre}
+                </div>
+                <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                  {SEDE_FLAGS[perfil.sede]} {perfil.sede === 'admin' ? 'Administrador' : `Sede ${perfil.sede}`}
+                </div>
+              </div>
+
+              {/* Cerrar sesión */}
+              <button
+                onClick={handleLogout}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '12px 16px',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  color: '#dc2626',
+                  textAlign: 'left',
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = '#fef2f2'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                🚪 Cerrar sesión
+              </button>
+            </div>
+          )}
         </div>
       </nav>
+
       <main style={{ flex: 1, padding: '24px', maxWidth: '1400px', width: '100%', margin: '0 auto' }}>
         {tab === 'sede' && !isAdmin && <MiSede perfil={perfil} />}
         {tab === 'resumen' && <Resumen perfil={perfil} />}
