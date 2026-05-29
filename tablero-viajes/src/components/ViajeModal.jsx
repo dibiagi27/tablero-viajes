@@ -3,8 +3,11 @@ import { supabase } from '../supabaseClient'
 
 const SEDES = ['Chile', 'Mendoza', 'Buenos Aires', 'Uruguay']
 const ADUANAS = [
-  'Aduana Mendoza', 'Aduana Buenos Aires', 'Aduana Santiago',
-  'Aduana Los Andes', 'Aduana Paso Los Libres', 'Aduana Colonia', 'Sin aduana'
+  'Aduana Chile',
+  'Puerto Seco (Mza)',
+  'PTM',
+  'Aduana Buenos Aires',
+  'Sin aduana',
 ]
 
 export default function ViajeModal({ perfil, viaje, onClose, onSave, isAdmin }) {
