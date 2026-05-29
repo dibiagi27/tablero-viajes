@@ -156,11 +156,13 @@ export default function ViajeModal({ perfil, viaje, onClose, onSave, isAdmin }) 
             </div>
             <div className="form-group">
               <label>Estado</label>
-              <select value={form.estado} onChange={e => handleEstadoChange(e.target.value)}>
-                <option>Programado</option>
-                <option>Salió</option>
-                <option>Llegó</option>
-              </select>
+            <select value={form.estado} onChange={e => handleEstadoChange(e.target.value)}>
+  <option>Programado</option>
+  <option>Salió</option>
+  <option>Reprogramado</option>
+  <option>Cancelado</option>
+  <option>Llegó</option>
+</select>
             </div>
           </div>
 
