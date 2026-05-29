@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../supabaseClient'
-import { format, parseISO, addDays, isToday } from 'date-fns'
+import { format, parseISO, addDays } from 'date-fns'
 
 export default function Resumen({ perfil }) {
   const [viajes, setViajes] = useState([])
@@ -76,7 +76,6 @@ export default function Resumen({ perfil }) {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="stat-cards">
         <div className="stat-card programado">
           <div className="label">Programados</div>
@@ -91,12 +90,11 @@ export default function Resumen({ perfil }) {
           <div className="value">{stats.llegaron}</div>
         </div>
         <div className="stat-card manana">
-          <div className="label">Programados mañana</div>
-          <div className="value">{viajes.filter(v => v.estado === 'Programado' && v.fecha_salida === manana).length}</div>
+          <div className="label">Programados</div>
+          <div className="value">{viajes.filter(v => v.estado === 'Programado').length}</div>
         </div>
       </div>
 
-      {/* Filtros */}
       <div className="filters">
         <button className={`filter-btn ${filtroDia === 'hoy' ? 'active' : ''}`}
           onClick={() => { setFiltroDia(filtroDia === 'hoy' ? '' : 'hoy'); setFiltroFecha('') }}>
@@ -149,7 +147,8 @@ export default function Resumen({ perfil }) {
                 <th>Interno</th>
                 <th>Semi</th>
                 <th>Zona de Influencia</th>
-                <th>Fecha Salida</th>
+                <th>F. Salida Programada</th>
+                <th>F. Salida Real</th>
                 <th>Fiscal/Aduana</th>
                 <th>IMO</th>
                 <th>Importador</th>
@@ -160,10 +159,10 @@ export default function Resumen({ perfil }) {
             </thead>
             <tbody>
               {loading && (
-                <tr><td colSpan="11" style={{ textAlign: 'center', padding: '32px', color: '#64748b' }}>Cargando...</td></tr>
+                <tr><td colSpan="12" style={{ textAlign: 'center', padding: '32px', color: '#64748b' }}>Cargando...</td></tr>
               )}
               {!loading && filtrados.length === 0 && (
-                <tr><td colSpan="11">
+                <tr><td colSpan="12">
                   <div className="empty-state">
                     <div style={{ fontSize: '32px' }}>🔍</div>
                     <p>No hay viajes que coincidan con los filtros</p>
@@ -174,9 +173,7 @@ export default function Resumen({ perfil }) {
                 const alertaHoy = v.estado === 'Programado' && v.fecha_salida === hoy
                 return (
                   <tr key={v.id} className={alertaHoy ? 'alerta-hoy' : ''}>
-                    <td>
-                      <span className={`sede-badge sede-${v.sede_origen}`}>{v.sede_origen}</span>
-                    </td>
+                    <td><span className={`sede-badge sede-${v.sede_origen}`}>{v.sede_origen}</span></td>
                     <td style={{ fontWeight: '600' }}>
                       {alertaHoy && <span className="alerta-dot" title="¡Sale hoy!" />}
                       {v.interno}
@@ -184,6 +181,9 @@ export default function Resumen({ perfil }) {
                     <td style={{ color: '#64748b' }}>{v.semi || '—'}</td>
                     <td><strong>{v.destino || '—'}</strong></td>
                     <td>{v.fecha_salida ? format(parseISO(v.fecha_salida), 'dd/MM/yyyy') : '—'}</td>
+                    <td style={{ color: v.fecha_salida_real ? '#0a3622' : '#64748b', fontWeight: v.fecha_salida_real ? '600' : '400' }}>
+                      {v.fecha_salida_real ? format(parseISO(v.fecha_salida_real), 'dd/MM/yyyy') : '—'}
+                    </td>
                     <td style={{ color: '#64748b', fontSize: '12px' }}>{v.fiscal_aduana || '—'}</td>
                     <td className={v.imo ? 'imo-si' : 'imo-no'}>{v.imo ? 'SÍ' : 'No'}</td>
                     <td style={{ color: '#64748b', fontSize: '12px' }}>{v.importador || '—'}</td>
