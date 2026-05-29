@@ -34,7 +34,7 @@ export default function Login() {
         boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
       }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <img src="https://raw.githubusercontent.com/dibiagi27/tablero-viajes/main/tablero-viajes/grupo_dibiagi.png" alt="Dibiagi" style={{ width: '260px', marginBottom: '20px' }} />
+          <img src="https://raw.githubusercontent.com/dibiagi27/tablero-viajes/main/tablero-viajes/grupo_dibiagi.png" alt="Dibiagi" style={{ width: '300px', marginBottom: '20px' }} />
           <p style={{ color: '#64748b', fontSize: '13px' }}>Ingresá con tu usuario</p>
         </div>
 
