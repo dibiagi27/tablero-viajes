@@ -66,6 +66,8 @@ input, select, textarea { font-family: inherit; }
 .badge-programado { background: #FFF3CD; color: #856404; }
 .badge-salio      { background: #D1E7DD; color: #0A3622; }
 .badge-llego      { background: #CFE2FF; color: #084298; }
+.badge-reprogramado { background: #fff3cd; color: #856404; }
+.badge-cancelado    { background: #f8d7da; color: #842029; }
 
 .sede-badge {
   display: inline-block;
