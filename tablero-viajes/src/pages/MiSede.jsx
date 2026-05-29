@@ -33,9 +33,13 @@ export default function MiSede({ perfil }) {
   }
 
   async function cambiarEstado(viaje, nuevoEstado) {
+    const update = { estado: nuevoEstado }
+    if (nuevoEstado === 'Salió' && !viaje.fecha_salida_real) {
+      update.fecha_salida_real = new Date().toISOString().split('T')[0]
+    }
     await supabase
       .from('viajes')
-      .update({ estado: nuevoEstado })
+      .update(update)
       .eq('id', viaje.id)
     fetchViajes()
   }
