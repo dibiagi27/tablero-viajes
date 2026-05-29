@@ -8,6 +8,7 @@ const ADUANAS = [
   'PTM',
   'Aduana Buenos Aires',
   'Aduana Uruguay',
+  'Brasil',
   'Sin aduana',
 ]
 
