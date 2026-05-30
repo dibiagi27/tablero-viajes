@@ -77,12 +77,11 @@ export default function Login() {
           </button>
         </form>
        <p style={{
-  position: 'fixed',
-  bottom: '12px',
-  right: '16px',
-  fontSize: '13px',
+  textAlign: 'right',
+  marginTop: '20px',
+  fontSize: '11px',
   color: '#94a3b8',
-  margin: 0,
+  margin: '20px 0 0 0',
 }}>
   Ing. Lautaro Castell
 </p>
