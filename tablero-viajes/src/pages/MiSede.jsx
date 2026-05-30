@@ -113,17 +113,6 @@ export default function MiSede({ perfil }) {
     llegaronHoy: viajes.filter(v => v.estado === 'Llegó' && v.fecha_llegada === hoy).length,
   }
 
-  const selectStyle = {
-    padding: '5px 12px',
-    borderRadius: '99px',
-    border: '1px solid #e2e8f0',
-    fontSize: '12px',
-    cursor: 'pointer',
-    background: '#f8fafc',
-    color: '#64748b',
-    outline: 'none',
-  }
-
   function renderAcciones(v) {
     if (v.estado === 'Programado') {
       return (
@@ -136,7 +125,15 @@ export default function MiSede({ perfil }) {
             if (val === 'editar') abrirEdicion(v)
             e.target.value = ''
           }}
-          style={selectStyle}
+          style={{
+            padding: '6px 10px',
+            border: '1px solid #e2e8f0',
+            borderRadius: '8px',
+            fontSize: '13px',
+            background: '#ffffff',
+            color: '#1a202c',
+            cursor: 'pointer',
+          }}
         >
           <option value="" disabled>Seleccionar</option>
           <option value="salio">✓ Salió</option>
@@ -154,7 +151,15 @@ export default function MiSede({ perfil }) {
             if (val === 'incidente') abrirIncidente(v)
             e.target.value = ''
           }}
-          style={selectStyle}
+          style={{
+            padding: '6px 10px',
+            border: '1px solid #e2e8f0',
+            borderRadius: '8px',
+            fontSize: '13px',
+            background: '#ffffff',
+            color: '#1a202c',
+            cursor: 'pointer',
+          }}
         >
           <option value="" disabled>Seleccionar</option>
           <option value="incidente">⚠ Incidente</option>
