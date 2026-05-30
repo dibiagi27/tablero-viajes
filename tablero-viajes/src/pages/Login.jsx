@@ -76,7 +76,7 @@ export default function Login() {
             {loading ? 'Ingresando...' : 'Ingresar'}
           </button>
         </form>
-        <p style={{
+       <p style={{
   position: 'fixed',
   bottom: '12px',
   right: '16px',
