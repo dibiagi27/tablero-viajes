@@ -3,6 +3,7 @@ import { supabase } from '../supabaseClient'
 import MiSede from './MiSede'
 import Resumen from './Resumen'
 import Admin from './Admin'
+import Metricas from './Metricas'
 
 export default function Dashboard({ session, perfil }) {
   const isAdmin = perfil.sede === 'admin'
@@ -47,6 +48,7 @@ export default function Dashboard({ session, perfil }) {
               <NavTab label="Mi Sede" active={tab === 'sede'} onClick={() => setTab('sede')} />
             )}
             <NavTab label="Resumen" active={tab === 'resumen'} onClick={() => setTab('resumen')} />
+            <NavTab label="Métricas" active={tab === 'metricas'} onClick={() => setTab('metricas')} />
             {isAdmin && (
               <NavTab label="Admin" active={tab === 'admin'} onClick={() => setTab('admin')} />
             )}
@@ -120,6 +122,7 @@ export default function Dashboard({ session, perfil }) {
       <main style={{ flex: 1, padding: '24px', maxWidth: '1400px', width: '100%', margin: '0 auto' }}>
         {tab === 'sede' && !isAdmin && <MiSede perfil={perfil} />}
         {tab === 'resumen' && <Resumen perfil={perfil} />}
+        {tab === 'metricas' && <Metricas />}
         {tab === 'admin' && isAdmin && <Admin />}
       </main>
     </div>
