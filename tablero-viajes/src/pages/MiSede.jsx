@@ -113,7 +113,18 @@ export default function MiSede({ perfil }) {
     llegaronHoy: viajes.filter(v => v.estado === 'Llegó' && v.fecha_llegada === hoy).length,
   }
 
-function renderAcciones(v) {
+  const selectStyle = {
+    padding: '5px 12px',
+    borderRadius: '99px',
+    border: '1px solid #e2e8f0',
+    fontSize: '12px',
+    cursor: 'pointer',
+    background: '#f8fafc',
+    color: '#64748b',
+    outline: 'none',
+  }
+
+  function renderAcciones(v) {
     if (v.estado === 'Programado') {
       return (
         <select
@@ -125,16 +136,7 @@ function renderAcciones(v) {
             if (val === 'editar') abrirEdicion(v)
             e.target.value = ''
           }}
-          style={{
-            padding: '5px 12px',
-            borderRadius: '99px',
-            border: '1px solid #e2e8f0',
-            fontSize: '12px',
-            cursor: 'pointer',
-            background: '#f8fafc',
-            color: '#64748b',
-            outline: 'none',
-          }}
+          style={selectStyle}
         >
           <option value="" disabled>Seleccionar</option>
           <option value="salio">✓ Salió</option>
@@ -152,44 +154,9 @@ function renderAcciones(v) {
             if (val === 'incidente') abrirIncidente(v)
             e.target.value = ''
           }}
-          style={{
-            padding: '5px 12px',
-            borderRadius: '99px',
-            border: '1px solid #e2e8f0',
-            fontSize: '12px',
-            cursor: 'pointer',
-            background: '#f8fafc',
-            color: '#64748b',
-            outline: 'none',
-          }}
+          style={selectStyle}
         >
           <option value="" disabled>Seleccionar</option>
-          <option value="incidente">⚠ Incidente</option>
-        </select>
-      )
-    }
-    return null
-  }
-    if (v.estado === 'Salió') {
-      return (
-        <select
-          defaultValue=""
-          onChange={e => {
-            const val = e.target.value
-            if (val === 'incidente') abrirIncidente(v)
-            e.target.value = ''
-          }}
-          style={{
-            padding: '5px 8px',
-            borderRadius: '6px',
-            border: '1px solid #e2e8f0',
-            fontSize: '12px',
-            cursor: 'pointer',
-            background: '#fff',
-            color: '#1a202c',
-          }}
-        >
-          <option value="" disabled>Acción...</option>
           <option value="incidente">⚠ Incidente</option>
         </select>
       )
