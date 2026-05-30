@@ -41,7 +41,7 @@ export default function Dashboard({ session, perfil }) {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
           <span style={{ color: '#fff', fontWeight: '700', fontSize: '15px' }}>
-            🚛 Tablero de Viajes
+            🚛  Tablero de Viajes
           </span>
           <div style={{ display: 'flex', gap: '4px' }}>
             {!isAdmin && (
