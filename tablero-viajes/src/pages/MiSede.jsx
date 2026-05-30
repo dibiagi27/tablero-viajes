@@ -113,24 +113,61 @@ export default function MiSede({ perfil }) {
     llegaronHoy: viajes.filter(v => v.estado === 'Llegó' && v.fecha_llegada === hoy).length,
   }
 
-  function renderAcciones(v) {
-    if (v.estado === 'Programado') {
-      return (
-        <>
-          <button className="btn btn-sm" style={{ background: '#d1e7dd', color: '#0a3622', border: 'none' }}
-            onClick={() => cambiarEstado(v, 'Salió')}>
-            ✓ Salió
-          </button>
-          <button className="btn btn-sm" style={{ background: '#f8d7da', color: '#842029', border: 'none' }}
-            onClick={() => abrirCancelacion(v)}>
-            ✕ Cancelar
-          </button>
-          <button className="btn btn-ghost btn-sm" onClick={() => abrirEdicion(v)}>
-            Editar
-          </button>
-        </>
-      )
-    }
+function renderAcciones(v) {
+  if (v.estado === 'Programado') {
+    return (
+      <select
+        defaultValue=""
+        onChange={e => {
+          const val = e.target.value
+          if (val === 'salio') cambiarEstado(v, 'Salió')
+          if (val === 'cancelar') abrirCancelacion(v)
+          if (val === 'editar') abrirEdicion(v)
+          e.target.value = ''
+        }}
+        style={{
+          padding: '5px 8px',
+          borderRadius: '6px',
+          border: '1px solid #e2e8f0',
+          fontSize: '12px',
+          cursor: 'pointer',
+          background: '#fff',
+          color: '#1a202c',
+        }}
+      >
+        <option value="" disabled>Acción...</option>
+        <option value="salio">✓ Salió</option>
+        <option value="cancelar">✕ Cancelar</option>
+        <option value="editar">⚙ Editar</option>
+      </select>
+    )
+  }
+  if (v.estado === 'Salió') {
+    return (
+      <select
+        defaultValue=""
+        onChange={e => {
+          const val = e.target.value
+          if (val === 'incidente') abrirIncidente(v)
+          e.target.value = ''
+        }}
+        style={{
+          padding: '5px 8px',
+          borderRadius: '6px',
+          border: '1px solid #e2e8f0',
+          fontSize: '12px',
+          cursor: 'pointer',
+          background: '#fff',
+          color: '#1a202c',
+        }}
+      >
+        <option value="" disabled>Acción...</option>
+        <option value="incidente">⚠ Incidente</option>
+      </select>
+    )
+  }
+  return null
+}
     if (v.estado === 'Salió') {
       return (
         <button className="btn btn-sm" style={{ background: '#fff3cd', color: '#856404', border: 'none' }}
