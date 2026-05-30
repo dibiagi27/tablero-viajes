@@ -81,7 +81,7 @@ export default function Login() {
   marginTop: '20px',
   fontSize: '13px',
   color: '#94a3b8',
-  margin: '20px 0 0 0',
+  margin: '20px -40px -40px 0',
 }}>
   Designed by Ing. Lautaro Castell
 </p>
