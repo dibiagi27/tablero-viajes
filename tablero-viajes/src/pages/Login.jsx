@@ -35,7 +35,7 @@ export default function Login() {
       }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <img src="https://raw.githubusercontent.com/dibiagi27/tablero-viajes/main/tablero-viajes/grupo_dibiagi.png" alt="Dibiagi" style={{ width: '270px', marginBottom: '20px' }} />
-          <p style={{ color: '#64748b', fontSize: '13px' }}>Ingresá con tu usuario</p>
+          <p style={{ color: '#64748b', fontSize: '15px' }}>Ingresá con tu usuario</p>
         </div>
         <form onSubmit={handleLogin}>
           <div className="form-group">
@@ -79,11 +79,11 @@ export default function Login() {
        <p style={{
   textAlign: 'right',
   marginTop: '20px',
-  fontSize: '11px',
+  fontSize: '13px',
   color: '#94a3b8',
   margin: '20px 0 0 0',
 }}>
-  Ing. Lautaro Castell
+  Designed by Ing. Lautaro Castell
 </p>
       </div>
     </div>
