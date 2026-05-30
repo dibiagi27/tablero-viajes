@@ -30,7 +30,7 @@ export default function MiSede({ perfil }) {
       .from('viajes')
       .select('*')
       .eq('sede_origen', perfil.sede)
-      .order('fecha_salida', { ascending: true })
+      .order('created_at', { ascending: false })
     setViajes(data || [])
     setLoading(false)
   }
@@ -113,67 +113,57 @@ export default function MiSede({ perfil }) {
     llegaronHoy: viajes.filter(v => v.estado === 'Llegó' && v.fecha_llegada === hoy).length,
   }
 
-function renderAcciones(v) {
-  if (v.estado === 'Programado') {
-    return (
-      <select
-        defaultValue=""
-        onChange={e => {
-          const val = e.target.value
-          if (val === 'salio') cambiarEstado(v, 'Salió')
-          if (val === 'cancelar') abrirCancelacion(v)
-          if (val === 'editar') abrirEdicion(v)
-          e.target.value = ''
-        }}
-        style={{
-          padding: '5px 8px',
-          borderRadius: '6px',
-          border: '1px solid #e2e8f0',
-          fontSize: '12px',
-          cursor: 'pointer',
-          background: '#fff',
-          color: '#1a202c',
-        }}
-      >
-        <option value="" disabled>Acción...</option>
-        <option value="salio">✓ Salió</option>
-        <option value="cancelar">✕ Cancelar</option>
-        <option value="editar">⚙ Editar</option>
-      </select>
-    )
-  }
-  if (v.estado === 'Salió') {
-    return (
-      <select
-        defaultValue=""
-        onChange={e => {
-          const val = e.target.value
-          if (val === 'incidente') abrirIncidente(v)
-          e.target.value = ''
-        }}
-        style={{
-          padding: '5px 8px',
-          borderRadius: '6px',
-          border: '1px solid #e2e8f0',
-          fontSize: '12px',
-          cursor: 'pointer',
-          background: '#fff',
-          color: '#1a202c',
-        }}
-      >
-        <option value="" disabled>Acción...</option>
-        <option value="incidente">⚠ Incidente</option>
-      </select>
-    )
-  }
-  return null
-}
+  function renderAcciones(v) {
+    if (v.estado === 'Programado') {
+      return (
+        <select
+          defaultValue=""
+          onChange={e => {
+            const val = e.target.value
+            if (val === 'salio') cambiarEstado(v, 'Salió')
+            if (val === 'cancelar') abrirCancelacion(v)
+            if (val === 'editar') abrirEdicion(v)
+            e.target.value = ''
+          }}
+          style={{
+            padding: '5px 8px',
+            borderRadius: '6px',
+            border: '1px solid #e2e8f0',
+            fontSize: '12px',
+            cursor: 'pointer',
+            background: '#fff',
+            color: '#1a202c',
+          }}
+        >
+          <option value="" disabled>Acción...</option>
+          <option value="salio">✓ Salió</option>
+          <option value="cancelar">✕ Cancelar</option>
+          <option value="editar">⚙ Editar</option>
+        </select>
+      )
+    }
     if (v.estado === 'Salió') {
       return (
-        <button className="btn btn-sm" style={{ background: '#fff3cd', color: '#856404', border: 'none' }}
-          onClick={() => abrirIncidente(v)}>
-          ⚠ Incidente
-        </button>
+        <select
+          defaultValue=""
+          onChange={e => {
+            const val = e.target.value
+            if (val === 'incidente') abrirIncidente(v)
+            e.target.value = ''
+          }}
+          style={{
+            padding: '5px 8px',
+            borderRadius: '6px',
+            border: '1px solid #e2e8f0',
+            fontSize: '12px',
+            cursor: 'pointer',
+            background: '#fff',
+            color: '#1a202c',
+          }}
+        >
+          <option value="" disabled>Acción...</option>
+          <option value="incidente">⚠ Incidente</option>
+        </select>
       )
     }
     return null
@@ -220,7 +210,7 @@ function renderAcciones(v) {
         </select>
       </div>
 
-       <div className="card" style={{ maxHeight: '480px', overflow: 'hidden' }}>
+      <div className="card" style={{ maxHeight: '480px', overflow: 'hidden' }}>
         <div className="table-wrap" style={{ maxHeight: '480px', overflowY: 'auto' }}>
           <table>
             <thead>
@@ -273,11 +263,7 @@ function renderAcciones(v) {
                     <td style={{ color: '#64748b', fontSize: '12px' }}>{v.importador || '—'}</td>
                     <td><span className={`badge badge-${v.estado?.toLowerCase().replace('ó','o').replace('é','e')}`}>{v.estado}</span></td>
                     <td style={{ color: '#64748b', fontSize: '12px', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={v.observacion || ''}>{v.observacion || '—'}</td>
-                    <td>
-                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                        {renderAcciones(v)}
-                      </div>
-                    </td>
+                    <td>{renderAcciones(v)}</td>
                   </tr>
                 )
               })}
