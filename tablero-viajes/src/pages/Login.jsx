@@ -80,7 +80,7 @@ export default function Login() {
   position: 'fixed',
   bottom: '12px',
   right: '16px',
-  fontSize: '11px',
+  fontSize: '13px',
   color: '#94a3b8',
   margin: 0,
 }}>
