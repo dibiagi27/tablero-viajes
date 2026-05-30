@@ -183,8 +183,8 @@ export default function MiSede({ perfil }) {
         </select>
       </div>
 
-      <div className="card">
-        <div className="table-wrap">
+       <div className="card" style={{ maxHeight: '480px', overflow: 'hidden' }}>
+        <div className="table-wrap" style={{ maxHeight: '480px', overflowY: 'auto' }}>
           <table>
             <thead>
               <tr>
